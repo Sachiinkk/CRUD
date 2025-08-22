@@ -9,17 +9,17 @@ import (
 )
 
 type HTTPServer struct {
-	Address string
+	Addr string `yaml:"address" env-required:"true"`
 }
 
 // env-default :"production"
 type Config struct {
-	ENV         string `yaml:"env" env:"ENV" env-require:"true" `
-	StoragePath string `yaml:"storage_path"  env-require:"true"`
+	ENV         string `yaml:"env" env:"ENV" env-default:"development" env-required:"true"`
+	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
 }
 
-func MustLoad() *Config{
+func MustLoad() *Config {
 	var configPath string
 
 	configPath = os.Getenv("CONFIG_PATH")
@@ -30,20 +30,20 @@ func MustLoad() *Config{
 
 		configPath = *flags
 
-		if configPath ==""{
+		if configPath == "" {
 			log.Fatal("config pah is not set")
 		}
 	}
 
-	if _, err := os.Stat(configPath) ; os.IsNotExist(err){
-		log.Fatalf("config file does not exist %s" , configPath)
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Fatalf("config file does not exist %s", configPath)
 	}
 
 	var cfg Config
 
-	err := cleanenv.ReadConfig(configPath , &cfg)
+	err := cleanenv.ReadConfig(configPath, &cfg)
 
-	if err != nil{
+	if err != nil {
 		log.Fatalf("con not read config file: %s", err.Error())
 	}
 	return &cfg
