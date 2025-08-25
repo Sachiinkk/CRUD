@@ -11,17 +11,10 @@ import (
 	"time"
 
 	config "github.com/Sachiinkk/student-api/internal"
+	"github.com/Sachiinkk/student-api/internal/http/handlers/student"
 )
 
-func RoutingFunc(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != http.MethodGet {
-		http.Error(w, "Methode not allowed", http.StatusMethodNotAllowed)
-	}
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("Welcome to student api"))
-
-}
 
 func main() {
 
@@ -33,7 +26,7 @@ func main() {
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("/", RoutingFunc)
+	router.HandleFunc("POST /api/student", student.New())
 
 	// server setup
 
